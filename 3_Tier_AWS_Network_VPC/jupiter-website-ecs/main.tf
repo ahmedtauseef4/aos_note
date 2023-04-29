@@ -6,16 +6,16 @@ provider "aws" {
 # create vpc
 
 module "vpc" {
-  source                            = "../modules/VPC"
-  region                            = var.region
-  vpc_cidr                          = var.vpc_cidr
-  project_name                      = var.project_name
-  public_subnet_az1_cidr            = var.public_subnet_az1_cidr
-  public_subnet_az2_cidr            = var.public_subnet_az2_cidr
-  private_app_subnet_az1_cidr       = var.private_app_subnet_az1_cidr
-  private_app_subnet_az2_cidr       = var.private_app_subnet_az2_cidr
-  private_data_subnet_az1_cidr      = var.private_data_subnet_az1_cidr
-  private_data_subnet_az2_cidr      = var.private_data_subnet_az2_cidr
+  source                       = "../modules/VPC"
+  region                       = var.region
+  vpc_cidr                     = var.vpc_cidr
+  project_name                 = var.project_name
+  public_subnet_az1_cidr       = var.public_subnet_az1_cidr
+  public_subnet_az2_cidr       = var.public_subnet_az2_cidr
+  private_app_subnet_az1_cidr  = var.private_app_subnet_az1_cidr
+  private_app_subnet_az2_cidr  = var.private_app_subnet_az2_cidr
+  private_data_subnet_az1_cidr = var.private_data_subnet_az1_cidr
+  private_data_subnet_az2_cidr = var.private_data_subnet_az2_cidr
 
 }
 
@@ -32,3 +32,13 @@ module "nat_gateway" {
   private_data_subnet_az2_id  = module.vpc.private_data_subnet_az2_id
 }
 */
+
+module "security_groups" {
+  source = "../modules/security-groups"
+  vpc_id = module.vpc.vpc_id
+}
+
+module "ecs_task_execution_role" {
+  source       = "../modules/ecs-task-execution-role"
+  project_name = module.vpc.project_name
+}
